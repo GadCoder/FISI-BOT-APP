@@ -7,8 +7,8 @@ class SumAPI {
   var logger = Logger();
 
   Future<dynamic> login(String email, String password) async {
-    var url = Uri.https(baseUrl, 'sumapi/loguearse');
-    var data = jsonEncode({'usuario': email, 'clave': password});
+    var url = Uri.https(baseUrl, 'sumapi/auth/login');
+    var data = jsonEncode({'username': email, 'password': password});
 
     Map<String, String> headers = {
       'accept': 'application/json',
@@ -38,9 +38,9 @@ class SumAPI {
           }
         }
       }
-      Map<String, dynamic> responseData = responseBody['data'][0];
-      // logger.d("Response data: ");
-      // logger.d(responseData);
+      Map<String, dynamic> responseData = responseBody;
+      logger.d("Response data: ");
+      logger.d(responseData);
 
       return {'response': responseData, 'cookies': cookieDict};
     } else {

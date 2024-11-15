@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:chapa_tu_aula/main.dart';
-import 'package:chapa_tu_aula/screens/classroms_list.dart';
 import 'package:flutter/material.dart';
 import 'package:chapa_tu_aula/screens/home.dart';
-import 'package:chapa_tu_aula/screens/perfil.dart';
 
 class NavDrawer extends StatefulWidget {
   Map<String, dynamic> responseData;
@@ -36,11 +34,15 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
       child: Center(
         child: Row(
           children: [
+            /*
+            *
             Expanded(
                 flex: 2,
                 child: CircleAvatar(
-                  backgroundImage: userPhoto,
+                  //backgroundImage: userPhoto,
+
                 )),
+             */
             Expanded(
               flex: 6,
               child: Text(
@@ -81,28 +83,8 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
         const Divider(
           color: Colors.grey,
         ),
-        ListTile(
-          title: const Text("Perfil"),
-          leading: const Icon(Icons.account_circle),
-          onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => ProfilePage(
-                  responseData: widget.responseData, cookies: widget.cookies),
-            ));
-          },
-        ),
-        ListTile(
-          title: const Text("Programación diaria"),
-          leading: const Icon(Icons.meeting_room),
-          onTap: () {
-            Navigator.of(context).pop();
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => ClassromsList(
-                  responseData: widget.responseData, cookies: widget.cookies),
-            ));
-          },
-        ),
+
+
       ])),
       ListTile(
         title: const Text("Cerrar sesión"),
@@ -119,9 +101,8 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
   }
 
   void getUserInfo() {
-    userName =
-        "${widget.responseData['dto']['nomAlumno']} ${widget.responseData['dto']['apePaterno']}${widget.responseData['dto']['apeMaterno']}";
-    Uint8List userPhotoBytes = base64Decode(widget.responseData['dto']['foto']);
-    userPhoto = MemoryImage(userPhotoBytes);
+    userName = widget.responseData["fullName"];
+    //Uint8List userPhotoBytes = base64Decode(widget.responseData['dto']['foto']);
+    //userPhoto = MemoryImage(userPhotoBytes);
   }
 }
