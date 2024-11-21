@@ -112,9 +112,10 @@ class _LoginFormState extends State<LoginForm> {
       password,
     );
 
-    if (result != null) {
+    if (result != null ) {
       Map<String, dynamic> responseData = result['response'];
       Map<String, String> cookies = result['cookies'];
+      login.showAlertToast("Correctamente logeado.");
       Navigator.push(
           context,
           MaterialPageRoute(

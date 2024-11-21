@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:chapa_tu_aula/main.dart';
 import 'package:flutter/material.dart';
 import 'package:chapa_tu_aula/screens/home.dart';
+import 'package:chapa_tu_aula/screens/chat.dart';
 
 class NavDrawer extends StatefulWidget {
   Map<String, dynamic> responseData;
@@ -79,6 +80,19 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
                 builder: (BuildContext context) => HomePage(
                     responseData: widget.responseData, cookies: widget.cookies),
               ));
+            }),
+        const Divider(
+          color: Colors.grey,
+        ),
+        ListTile(
+            title: const Text("Chat"),
+            leading: const Icon(
+              (Icons.chat),
+            ),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+              MaterialPageRoute(builder: (BuildContext context) => Chat()));
             }),
         const Divider(
           color: Colors.grey,

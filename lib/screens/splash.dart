@@ -32,10 +32,11 @@ class _MyHomePageState extends State<MyHomePageSplash> {
   _navigateHome() async {
     await Future.delayed(Duration(milliseconds: 4000), () {});
 
+    // ignore: use_build_context_synchronously
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomePage(),
+        builder: (context) => HomePage(responseData: {}, cookies: {},),
       ),
     );
   }

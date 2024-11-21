@@ -24,9 +24,14 @@ class SumAPI {
     if (response.statusCode == 200) {
       final responseBody = jsonDecode(response.body);
       final token = responseBody['data'];
-
       final cookies = response.headers['set-cookie'];
-      logger.d("COOKIES:${cookies!}");
+      if( cookies!= null){
+        logger.d("COOKIES:${cookies!}");
+      } else{
+        logger.d("No cookies found in the response.");
+      }
+      
+      
       final cookieDict = <String, String>{};
 
       if (cookies != null) {
