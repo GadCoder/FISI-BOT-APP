@@ -5,35 +5,36 @@ import 'package:chapa_tu_aula/components/shared/navDrawer.dart';
 import 'package:chapa_tu_aula/services/api_sum.dart';
 import 'package:logger/logger.dart';
 
+import '../components/shared/user_info.dart';
+
 class HomePage extends StatefulWidget {
-  Map<String, dynamic> responseData;
-
-  Map<String, String> cookies;
-
-  HomePage({super.key, required this.responseData, required this.cookies});
+  HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  late Map<String, dynamic> userInfo;
-  late String userName;
+  UserInfo userInfo = UserInfo();
   late MemoryImage userPhoto;
-  late String userDegree;
-  late String userPlan;
   final apiSUM = SumAPI();
+  bool infoIsFetched = false;
 
   var logger = Logger();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     getUserInfo();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'CHAPA TU AULA',
+          'FISI BOT',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
@@ -41,44 +42,54 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      body: Center(
-          child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            /*
-
-            leading: CircleAvatar(
-              backgroundImage: userPhoto,
-            ),
-             */
-            title: const Text('Buenos días'),
-            subtitle: Text(userName),
-          ),
-
-          const SizedBox(
-            height: 50,
-          ),
-
-        ],
-      )),
-      drawer: NavDrawer(
-        responseData: widget.responseData,
-        cookies: widget.cookies,
-      ),
+      body: userInfo.name == null
+          ? const Center(child: CircularProgressIndicator())
+          : Center(
+              child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: userPhoto,
+                  ),
+                  title: const Text('Buenos días, '),
+                  subtitle: Text(userInfo.name!),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+              ],
+            )),
+      drawer: NavDrawer(),
     );
   }
 
-  void getUserInfo() {
-    var userNameFromAPI = widget.responseData["fullName"].toString();
-    userName = utf8.decode(userNameFromAPI.runes.toList());
-    //userDegree =
-    //    widget.responseData['dto']['desEscuela'].split(' ').last.toUpperCase();
-    userDegree = "INGENIERÍA DE SOFTWARE";
-    // userPlan = widget.responseData['dto']['codPlan'];
-    userPlan = "2018";
+  void getUserInfo() async {
+    if(userInfo.studentCode != null){
+      createUserPhoto();
+      return;
+    }
+    Future<dynamic> request = apiSUM.getPersonalInfo();
+    Map<String, dynamic>? data = await request;
+    if (data == null) {
+      logger.d("ERROR GETTING USER INFO");
+      return;
+    }
+    String tempLastName = "${data["apePaterno"]} ${data["apeMaterno"]}";
+    setState(() {
+      userInfo.name = utf8.decode(data["nombre"].toString().runes.toList());
+      userInfo.lastName = utf8.decode(tempLastName.runes.toList());
+      userInfo.studentCode = data["codAlumno"].toString();
+      userInfo.degree = utf8.decode(data["desEscuela"].toString().runes.toList());
+      userInfo.userPhotoBytes = data["foto"];
+      createUserPhoto();
 
-    //Uint8List userPhotoBytes = base64Decode(widget.responseData['dto']['foto']);
-    //userPhoto = MemoryImage(userPhotoBytes);
+    });
+
+
+  }
+  void createUserPhoto(){
+    Uint8List userPhotoBytes = base64Decode(userInfo.userPhotoBytes!);
+    userPhoto = MemoryImage(userPhotoBytes);
   }
 }

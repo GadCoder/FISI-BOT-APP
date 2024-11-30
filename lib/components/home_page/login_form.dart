@@ -107,22 +107,21 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   void makeLoginRequest(String email, String password) async {
-    final dynamic result = await apiSUM.login(
+    final dynamic loginIsSucessfull = await apiSUM.login(
       email.split("@")[0],
       password,
     );
 
-    if (result != null ) {
-      Map<String, dynamic> responseData = result['response'];
-      Map<String, String> cookies = result['cookies'];
-      login.showAlertToast("Correctamente logeado.");
+    if(!loginIsSucessfull){
+      login.showAlertToast("Correo o contraseña incorrecta");
+
+    }
+
+      login.showSuccessfulToast("Inicio de sesión exitoso");
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  HomePage(responseData: responseData, cookies: cookies)));
-    } else {
-      login.showAlertToast("Correo o contraseña incorrecta");
-    }
+                  HomePage()));
   }
 }
