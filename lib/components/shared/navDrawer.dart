@@ -1,17 +1,16 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:chapa_tu_aula/components/shared/user_info.dart';
 import 'package:chapa_tu_aula/main.dart';
 import 'package:flutter/material.dart';
 import 'package:chapa_tu_aula/screens/home.dart';
 import 'package:chapa_tu_aula/screens/chat.dart';
 
 class NavDrawer extends StatefulWidget {
-  Map<String, dynamic> responseData;
 
-  Map<String, String> cookies;
 
-  NavDrawer({super.key, required this.responseData, required this.cookies});
+  NavDrawer({super.key});
 
   @override
   _MyNavDrawerPageState createState() {
@@ -20,14 +19,19 @@ class NavDrawer extends StatefulWidget {
 }
 
 class _MyNavDrawerPageState extends State<NavDrawer> {
-  late String userName;
+  UserInfo userInfo = UserInfo();
   late MemoryImage userPhoto;
 
   @override
+  void initState() {
+    super.initState();
+    createUserPhoto();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    getUserInfo();
     var cabecera = DrawerHeader(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
           image: DecorationImage(
         image: AssetImage('assets/images/FISI.png'),
         fit: BoxFit.fill,
@@ -35,20 +39,16 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
       child: Center(
         child: Row(
           children: [
-            /*
-            *
             Expanded(
                 flex: 2,
                 child: CircleAvatar(
-                  //backgroundImage: userPhoto,
-
+                  backgroundImage: userPhoto,
                 )),
-             */
             Expanded(
               flex: 6,
               child: Text(
-                "Buenos días,\n ${userName} ",
-                style: TextStyle(
+                "Buenos días,\n ${userInfo.name} ",
+                style: const TextStyle(
                   color: Colors.white,
                   shadows: [
                     Shadow(
@@ -78,7 +78,7 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) => HomePage(
-                    responseData: widget.responseData, cookies: widget.cookies),
+                ),
               ));
             }),
         const Divider(
@@ -114,9 +114,13 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
     return Drawer(child: verlista);
   }
 
-  void getUserInfo() {
-    userName = widget.responseData["fullName"];
-    //Uint8List userPhotoBytes = base64Decode(widget.responseData['dto']['foto']);
-    //userPhoto = MemoryImage(userPhotoBytes);
+  void createUserPhoto(){
+    Uint8List userPhotoBytes = base64Decode(userInfo.userPhotoBytes!);
+    setState(() {
+    userPhoto = MemoryImage(userPhotoBytes);
+    });
+
   }
+
+
 }
