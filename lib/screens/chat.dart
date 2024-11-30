@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'messages.dart';
+import 'package:chapa_tu_aula/services/api_chat.dart';
 
 class Chat extends StatefulWidget {
   const Chat({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class _ChatState extends State<Chat> {
   List<Map<String, dynamic>> messages = [];
 
   // Lista de sugerencias
-  final List<String>suggestions = [
+  final List<String> suggestions = [
     "¿Cuando termina el semestre?",
     "¿Noticias sobre la facultad?",
     "Horarios de atención"
@@ -28,10 +29,10 @@ class _ChatState extends State<Chat> {
     sendWelcomeMessage();
   }
 
-void sendWelcomeMessage() {
-  setState(() {
-    messages.add({
-      'message': '''
+  void sendWelcomeMessage() {
+    setState(() {
+      messages.add({
+        'message': '''
 Bienvenido! Soy FISI-CHATBOT. Aquí hay algunas cosas con las que puedo ayudarte:
 
 - Consultar sobre trámites facultad.
@@ -40,11 +41,11 @@ Bienvenido! Soy FISI-CHATBOT. Aquí hay algunas cosas con las que puedo ayudarte
 - Otros servicios relacionados con la facultad.
 
 ''',
-      'isUserMessage': false,
-      'image': 'assets/images/chatbot.webp', 
+        'isUserMessage': false,
+        'image': 'assets/images/chatbot.webp',
+      });
     });
-  });
-}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -117,32 +118,39 @@ Bienvenido! Soy FISI-CHATBOT. Aquí hay algunas cosas con las que puedo ayudarte
   }
 
   // Agregar mensajes de bot y usuarios
-  void sendMessage(String text) {
-    if (text.isEmpty) return; // No enviar mensajes vacios
-     
+  void sendMessage(String text) async {
+    if (text.isEmpty) return; // No enviar mensajes vacíos
+
+    // Add the user's message immediately
     setState(() {
-      // Agregar mensaje de usuario
       messages.add({'message': text, 'isUserMessage': true});
-      String botResponse= 'Me preguntaste: $text';
-      // Aqui iria lo de BOT
-      if(text == '¿Cuando atiende la UNAYOE? '){
-        botResponse = '''
-La UNAYOE atiende de 8 am a 4 pm.''';
-      }else if(text == '¿Como está calificado el profesor Guerra de IOT?'){
-        botResponse = '''
-El profesor Guerra enseña IOT y esta calificado con 4 estrellas, por los compañeros.''';
-      }else if(text== '¿Donde puedo realizar el tramite de Solicitud Simple?'){
-       botResponse = '''
-El tramite de Solicitud Simple se encuentra DISPONIBLE. 
-
-Requisitos: 
-    -Solicitud simple especificando a quien va dirigido.
-    -Documento Sustentatorio (OPCIONAL) solo si es necesario.
-
-
-***Si cumples los requisitos puedes realizar siguiendo el siguiente URL: https://tramiteonline.unmsm.edu.pe/sgdfd/mat/tipo-tramite/solicitud-simple?local=20.''';
-      }
-      messages.add({'message': botResponse, 'isUserMessage': false});
     });
+
+    try {
+      // Show a loading indicator or placeholder while waiting for the bot's response
+      setState(() {
+        messages.add({'message': 'Escribiendo...', 'isUserMessage': false});
+      });
+
+      // Call the chatbot API
+      final botAPI = ChatbotAPI(); // Replace with your secret key
+      final response = await botAPI.queryChatbot(text);
+
+      // Remove the "Escribiendo..." message and replace it with the bot's response
+      setState(() {
+        messages.removeLast(); // Remove the placeholder
+        if (response != null && response['answer'] != null) {
+          messages.add({'message': response['answer'], 'isUserMessage': false});
+        } else {
+          messages.add({'message': 'Hubo un problema al obtener la respuesta.', 'isUserMessage': false});
+        }
+      });
+    } catch (e) {
+      // Handle errors gracefully
+      setState(() {
+        messages.removeLast(); // Remove the placeholder
+        messages.add({'message': 'Error al comunicarse con el bot.', 'isUserMessage': false});
+      });
+    }
   }
 }

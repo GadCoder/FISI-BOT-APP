@@ -5,6 +5,8 @@ import 'package:chapa_tu_aula/main.dart';
 import 'package:flutter/material.dart';
 import 'package:chapa_tu_aula/screens/home.dart';
 import 'package:chapa_tu_aula/screens/chat.dart';
+import 'package:chapa_tu_aula/screens/teachers.dart';
+
 
 class NavDrawer extends StatefulWidget {
   Map<String, dynamic> responseData;
@@ -97,9 +99,23 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
         const Divider(
           color: Colors.grey,
         ),
+        ListTile(
+            title: const Text("Profesores"),
+            leading: const Icon(
+              (Icons.note_add),
+            ),
+            onTap: () {
+              Navigator.of(context).pop();
+              Navigator.of(context).push(
+              MaterialPageRoute(builder: (BuildContext context) => TeachersScreen()));
+            }),
+        const Divider(
+          color: Colors.grey,
+        ),
 
 
       ])),
+      
       ListTile(
         title: const Text("Cerrar sesión"),
         leading: const Icon(Icons.logout),

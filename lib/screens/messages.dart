@@ -72,7 +72,6 @@ Widget build(BuildContext context) {
                       reportMessage(index);
                     },
                   ),
-                  Text('Reportar'),
                   IconButton(
                     icon: Icon(Icons.copy),
                     onPressed: () {
@@ -83,6 +82,12 @@ Widget build(BuildContext context) {
                     icon: Icon(Icons.share),
                     onPressed: () {
                       shareMessage(messageText);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.replay),
+                    onPressed: () {
+                      reloadMessage(messageText);
                     },
                   ),
                 ],
@@ -209,6 +214,10 @@ if (image != null) {
 
   void shareMessage(String message) {
     Share.share(message);
+  }
+  
+  void reloadMessage(String message) {
+    //falta definir
   }
 
   void reportMessage(int index) {
