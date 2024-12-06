@@ -64,6 +64,7 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
       ),
     );
 
+
     var verlista = Column(children: [
       Expanded(
           child: ListView(children: [
@@ -105,4 +106,5 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
     //Uint8List userPhotoBytes = base64Decode(widget.responseData['dto']['foto']);
     //userPhoto = MemoryImage(userPhotoBytes);
   }
+
 }

@@ -2,12 +2,15 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:chapa_tu_aula/components/shared/navDrawer.dart';
+import 'package:chapa_tu_aula/components/shared/bttmNavDrawer.dart';
+import 'package:chapa_tu_aula/components/home_page/newsCarousel.dart';
+
 import 'package:chapa_tu_aula/services/api_sum.dart';
 import 'package:logger/logger.dart';
 
+
 class HomePage extends StatefulWidget {
   Map<String, dynamic> responseData;
-
   Map<String, String> cookies;
 
   HomePage({super.key, required this.responseData, required this.cookies});
@@ -26,46 +29,43 @@ class _HomePageState extends State<HomePage> {
 
   var logger = Logger();
 
+
+
   @override
   Widget build(BuildContext context) {
     getUserInfo();
     return Scaffold(
+
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
-          'CHAPA TU AULA',
+          'FISIBOT',
           style: TextStyle(
             color: Colors.black,
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
+
       ),
       body: Center(
+
           child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            /*
+            children: [
 
-            leading: CircleAvatar(
-              backgroundImage: userPhoto,
-            ),
-             */
-            title: const Text('Buenos días'),
-            subtitle: Text(userName),
-          ),
-
-          const SizedBox(
-            height: 50,
-          ),
-
-        ],
+              /*FractionallySizedBox(
+                heightFactor: 0.8,
+               child: NewsCarousel(),
+             ),*/
+            Expanded(child: NewsCarousel(),)
+          ],
       )),
+
       drawer: NavDrawer(
         responseData: widget.responseData,
         cookies: widget.cookies,
       ),
+      bottomNavigationBar: CustomBottomNavigationBar(),
     );
   }
 
@@ -82,3 +82,4 @@ class _HomePageState extends State<HomePage> {
     //userPhoto = MemoryImage(userPhotoBytes);
   }
 }
+

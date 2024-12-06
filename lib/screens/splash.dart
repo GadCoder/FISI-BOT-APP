@@ -35,7 +35,7 @@ class _MyHomePageState extends State<MyHomePageSplash> {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => HomePage(),
+        builder: (context) => HomePage(responseData: {}, cookies: {},),
       ),
     );
   }
