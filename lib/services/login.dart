@@ -9,6 +9,10 @@ class Login {
     Fluttertoast.showToast(msg: message, backgroundColor: Colors.red.shade400);
   }
 
+  void showSuccessfulToast(String message) {
+    Fluttertoast.showToast(msg: message, backgroundColor: Colors.green.shade400);
+  }
+
   bool fieldIsEmpty(String fieldText) {
     return fieldText.isEmpty;
   }
