@@ -5,10 +5,12 @@ import 'package:chapa_tu_aula/components/shared/navDrawer.dart';
 import 'package:chapa_tu_aula/services/api_sum.dart';
 import 'package:logger/logger.dart';
 
+import '../components/home_page/newsCarousel.dart';
+import '../components/shared/bttmNavDrawer.dart';
 import '../components/shared/user_info.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
+  HomePage({super.key, required Map responseData, required Map cookies});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -46,21 +48,13 @@ class _HomePageState extends State<HomePage> {
           ? const Center(child: CircularProgressIndicator())
           : Center(
               child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: userPhoto,
-                  ),
-                  title: const Text('Buenos días, '),
-                  subtitle: Text(userInfo.name!),
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-              ],
+                children: [
+                  Expanded(child: NewsCarousel(),
+                  )
+                ],
             )),
-      drawer: NavDrawer(),
+      drawer: NavDrawer(responseData: {}, cookies: {},),
+      bottomNavigationBar: CustomBottomNavigationBar(responseData: {}, cookies: {},),
     );
   }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../components/shared/bttmNavDrawer.dart';
+
 class TeachersScreen extends StatefulWidget {
   const TeachersScreen({Key? key}) : super(key: key);
 
@@ -174,6 +176,7 @@ class _TeachersScreenState extends State<TeachersScreen> {
           ],
         ),
       ),
+      bottomNavigationBar: CustomBottomNavigationBar(responseData: {}, cookies: {},),
     );
   }
 }

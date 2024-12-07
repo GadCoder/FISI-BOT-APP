@@ -1,11 +1,13 @@
-import 'dart:convert';
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:chapa_tu_aula/screens/home.dart';
 import 'package:chapa_tu_aula/main.dart';
 
+import '../../screens/chat.dart';
+import '../../screens/teachers.dart';
+
 class CustomBottomNavigationBar extends StatefulWidget {
+
+  CustomBottomNavigationBar({super.key, required Map<String, dynamic> responseData, required Map<String, String> cookies});
 
   @override
   _CustomBottomNavigationBarState createState() =>
@@ -13,13 +15,7 @@ class CustomBottomNavigationBar extends StatefulWidget {
 }
 
 class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
-  int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,10 +49,12 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 },
               ),
               IconButton(
-                icon: Icon(Icons.person, size: 36),
-                onPressed: () {
-                  print('Perfil');
-                }
+                  icon: Icon(Icons.school, size: 36),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).push(
+                        MaterialPageRoute(builder: (BuildContext context) => TeachersScreen()));
+                  }
               ),
             ],
           ),
@@ -69,7 +67,9 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             height: 70.0,
             child: FloatingActionButton(
               onPressed: () {
-                print('CHAT');
+                Navigator.of(context).pop();
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (BuildContext context) => Chat()));
               },
               backgroundColor: Theme.of(context).primaryColor,
               child: const Icon(

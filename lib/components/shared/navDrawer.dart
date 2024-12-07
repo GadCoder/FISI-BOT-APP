@@ -12,7 +12,7 @@ import 'package:chapa_tu_aula/screens/teachers.dart';
 class NavDrawer extends StatefulWidget {
 
 
-  NavDrawer({super.key});
+  NavDrawer({super.key, required Map<String, dynamic> responseData, required Map<String, String> cookies});
 
   @override
   _MyNavDrawerPageState createState() {
@@ -79,7 +79,7 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
             onTap: () {
               Navigator.of(context).pop();
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => HomePage(
+                builder: (BuildContext context) => HomePage(responseData: {}, cookies: {},
                 ),
               ));
             }),
@@ -102,7 +102,7 @@ class _MyNavDrawerPageState extends State<NavDrawer> {
         ListTile(
             title: const Text("Profesores"),
             leading: const Icon(
-              (Icons.note_add),
+              (Icons.school),
             ),
             onTap: () {
               Navigator.of(context).pop();
