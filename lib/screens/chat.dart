@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'messages.dart';
 import 'package:chapa_tu_aula/services/api_chat.dart';
+import 'dart:convert';
 
 class Chat extends StatefulWidget {
   const Chat({Key? key}) : super(key: key);
@@ -119,37 +120,57 @@ Bienvenido! Soy FISI-CHATBOT. Aquí hay algunas cosas con las que puedo ayudarte
 
   // Agregar mensajes de bot y usuarios
   void sendMessage(String text) async {
-    if (text.isEmpty) return; // No enviar mensajes vacíos
+    if (text.isEmpty) return; // Don't send empty messages
 
-    // Add the user's message immediately
+    // Display the user's message immediately
     setState(() {
       messages.add({'message': text, 'isUserMessage': true});
     });
 
     try {
-      // Show a loading indicator or placeholder while waiting for the bot's response
+      // Add a "writing" message until the response is received
       setState(() {
         messages.add({'message': 'Escribiendo...', 'isUserMessage': false});
       });
 
       // Call the chatbot API
-      final botAPI = ChatbotAPI(); // Replace with your secret key
+      final botAPI = ChatbotAPI(); // Assuming you're initializing your API instance here
       final response = await botAPI.queryChatbot(text);
 
-      // Remove the "Escribiendo..." message and replace it with the bot's response
+      // Print response for debugging
+      print('Bot Response: $response');
+
+      // Handle possible null or invalid response
       setState(() {
-        messages.removeLast(); // Remove the placeholder
-        if (response != null && response['answer'] != null) {
-          messages.add({'message': response['answer'], 'isUserMessage': false});
+        messages.removeLast(); // Remove the "Escribiendo..." message
+
+        // Check if the response contains the 'answer' key
+        if (response != null && response.containsKey('response') && response['response'] != null) {
+          var answer = response['response']['answer'];
+
+          // If the answer is a String, we can decode it
+          if (answer is String) {
+            // Decode the response to fix encoding issues (like Ã¡ -> á)
+            answer = utf8.decode(latin1.encode(answer)); // Fix encoding issues
+          } else if (answer is Map) {
+            // If the answer is a Map, you might need to convert it to a string or handle it differently
+            answer = jsonEncode(answer);
+          } else {
+            answer = 'No pude obtener una respuesta válida.';
+          }
+
+          // Add the final decoded answer to the messages
+          messages.add({'message': answer, 'isUserMessage': false});
         } else {
-          messages.add({'message': 'Hubo un problema al obtener la respuesta.', 'isUserMessage': false});
+          // Handle cases where 'response' key is missing or invalid
+          messages.add({'message': 'No pude obtener una respuesta. Intenta de nuevo.', 'isUserMessage': false});
         }
       });
     } catch (e) {
-      // Handle errors gracefully
+      // Handle errors like network failure, API issues, etc.
       setState(() {
-        messages.removeLast(); // Remove the placeholder
-        messages.add({'message': 'Error al comunicarse con el bot.', 'isUserMessage': false});
+        messages.removeLast(); // Remove the "Escribiendo..." message
+        messages.add({'message': 'Error al comunicarse con el bot: $e', 'isUserMessage': false});
       });
     }
   }

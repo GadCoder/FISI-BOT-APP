@@ -122,6 +122,6 @@ class _LoginFormState extends State<LoginForm> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  HomePage()));
+                  HomePage(responseData: {}, cookies: {},)));
   }
 }
